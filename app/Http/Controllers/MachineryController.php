@@ -44,9 +44,9 @@ class MachineryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Machinery $machinery)
+    public function show(Machinery $machinery): MachineryResource
     {
-        //
+        return MachineryResource::make($machinery);
     }
 
     /**
