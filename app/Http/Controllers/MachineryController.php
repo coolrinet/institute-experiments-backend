@@ -8,6 +8,7 @@ use App\Http\Resources\MachineryResource;
 use App\Models\Machinery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
 
 class MachineryController extends Controller
 {
@@ -19,7 +20,7 @@ class MachineryController extends Controller
         $relation = $request->query('include');
 
         if ($relation) {
-            abort_if($relation !== 'user', 404);
+            abort_if($relation !== 'user', Response::HTTP_NOT_FOUND);
 
             return MachineryResource::collection(Machinery::with($relation)->paginate());
         }
@@ -30,9 +31,14 @@ class MachineryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMachineryRequest $request)
+    public function store(StoreMachineryRequest $request): Response
     {
-        //
+        $machinery = new Machinery();
+        $machinery->fill($request->validated());
+        $machinery->user()->associate($request->user());
+        $machinery->save();
+
+        return response()->noContent(Response::HTTP_CREATED);
     }
 
     /**
