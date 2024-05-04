@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Machinery::class);
     }
+
+    public function machineryParameters(): HasMany
+    {
+        return $this->hasMany(MachineryParameter::class);
+    }
 }
