@@ -3,6 +3,7 @@
 namespace Tests\Feature\Machinery;
 
 use App\Models\Machinery;
+use App\Models\MachineryParameter;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -47,6 +48,19 @@ class DeleteMachineryTest extends TestCase
             ->deleteJson(route('machineries.destroy', $this->machinery));
 
         $response->assertForbidden();
+        $this->assertModelExists($this->machinery);
+    }
+
+    public function test_user_cannot_delete_machinery_that_has_parameters(): void
+    {
+        MachineryParameter::factory()->create([
+            'machinery_id' => $this->machinery->id,
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->deleteJson(route('machineries.destroy', $this->machinery));
+
+        $response->assertConflict();
         $this->assertModelExists($this->machinery);
     }
 

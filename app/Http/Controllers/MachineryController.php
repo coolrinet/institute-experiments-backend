@@ -9,6 +9,7 @@ use App\Models\Machinery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class MachineryController extends Controller
@@ -39,10 +40,12 @@ class MachineryController extends Controller
      */
     public function store(StoreMachineryRequest $request): Response
     {
-        $machinery = new Machinery();
-        $machinery->fill($request->validated());
-        $machinery->user()->associate($request->user());
-        $machinery->save();
+        DB::transaction(function () use ($request) {
+            $machinery = new Machinery();
+            $machinery->fill($request->validated());
+            $machinery->user()->associate($request->user());
+            $machinery->save();
+        });
 
         return response()->noContent(Response::HTTP_CREATED);
     }
@@ -73,6 +76,12 @@ class MachineryController extends Controller
     public function destroy(Machinery $machinery): Response
     {
         Gate::authorize('delete', $machinery);
+
+        abort_if(
+            $machinery->parameters()->exists(),
+            Response::HTTP_CONFLICT,
+            'Cannot delete machinery with parameters'
+        );
 
         $machinery->delete();
 
