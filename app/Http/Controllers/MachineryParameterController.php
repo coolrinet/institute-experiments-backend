@@ -6,6 +6,7 @@ use App\Http\Requests\MachineryParameter\StoreMachineryParameterRequest;
 use App\Http\Requests\MachineryParameter\UpdateMachineryParameterRequest;
 use App\Http\Resources\MachineryParameterResource;
 use App\Models\MachineryParameter;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -16,10 +17,38 @@ class MachineryParameterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): ResourceCollection
+    public function index(Request $request): ResourceCollection
     {
+        $name = $request->query('name');
+        $userId = $request->query('user_id');
+        $machineryId = $request->query('machinery_id');
+        $parameterType = $request->query('parameter_type');
+        $valueType = $request->query('value_type');
+
+        $machineryParameters = MachineryParameter::with(['machinery', 'user']);
+
+        if ($name) {
+            $machineryParameters = $machineryParameters->filterByName($name);
+        }
+
+        if ($userId) {
+            $machineryParameters = $machineryParameters->filterByUserId($userId);
+        }
+
+        if ($machineryId) {
+            $machineryParameters = $machineryParameters->filterByMachineryId($machineryId);
+        }
+
+        if ($parameterType) {
+            $machineryParameters = $machineryParameters->filterByParameterType($parameterType);
+        }
+
+        if ($valueType) {
+            $machineryParameters = $machineryParameters->filterByValueType($valueType);
+        }
+
         return MachineryParameterResource::collection(
-            MachineryParameter::with(['machinery', 'user'])->paginate()
+            $machineryParameters->paginate()
         );
     }
 
