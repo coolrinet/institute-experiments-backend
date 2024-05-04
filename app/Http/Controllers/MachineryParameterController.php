@@ -41,9 +41,11 @@ class MachineryParameterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(MachineryParameter $machineryParameter)
+    public function show(MachineryParameter $machineryParameter): MachineryParameterResource
     {
-        //
+        return MachineryParameterResource::make(
+            $machineryParameter->load('machinery')
+        );
     }
 
     /**
