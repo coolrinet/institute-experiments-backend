@@ -32,26 +32,33 @@ class MachineriesListTest extends TestCase
         $response->assertJsonPath('meta.last_page', 3);
     }
 
-    public function test_authenticated_user_can_get_list_of_machineries_with_relations(): void
+    public function test_user_can_get_list_of_machineries_by_name(): void
     {
+        Machinery::factory()->create(['name' => 'Machine']);
+
         $response = $this->actingAs($this->user)
             ->getJson(
-                route('machineries.index', ['include' => 'user'])
+                route('machineries.index', ['name' => 'Machine'])
             );
 
         $response->assertOk();
-        $response->assertJsonCount(15, 'data');
-        $this->assertNotTrue($response->assertJsonMissingPath('data.*.user'));
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('meta.last_page', 1);
     }
 
-    public function test_authenticated_user_cannot_get_list_of_machineries_with_invalid_relations(): void
+    public function test_user_can_get_list_of_machineries_by_user_id(): void
     {
+        $machineriesCount = Machinery::where('user_id', $this->user->id)
+            ->count();
+
         $response = $this->actingAs($this->user)
             ->getJson(
-                route('machineries.index', ['include' => 'random-word'])
+                route('machineries.index', ['user_id' => $this->user->id])
             );
 
-        $response->assertNotFound();
+        $response->assertOk();
+        $response->assertJsonCount(min($machineriesCount, 15), 'data');
+        $response->assertJsonPath('meta.total', $machineriesCount);
     }
 
     public function test_unauthenticated_user_cannot_get_list_of_machineries(): void

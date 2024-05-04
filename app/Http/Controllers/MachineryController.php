@@ -18,15 +18,20 @@ class MachineryController extends Controller
      */
     public function index(Request $request): ResourceCollection
     {
-        $relation = $request->query('include');
+        $name = $request->query('name');
+        $userId = $request->query('user_id');
 
-        if ($relation) {
-            abort_if($relation !== 'user', Response::HTTP_NOT_FOUND);
+        $machineries = Machinery::with('user');
 
-            return MachineryResource::collection(Machinery::with($relation)->paginate());
+        if ($name) {
+            $machineries = $machineries->filterByName($name);
         }
 
-        return MachineryResource::collection(Machinery::paginate());
+        if ($userId) {
+            $machineries = $machineries->filterByUserId($userId);
+        }
+
+        return MachineryResource::collection($machineries->paginate());
     }
 
     /**
