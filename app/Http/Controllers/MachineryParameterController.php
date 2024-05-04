@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MachineryParameter\StoreMachineryParameterRequest;
 use App\Http\Resources\MachineryParameterResource;
 use App\Models\MachineryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
 
 class MachineryParameterController extends Controller
 {
@@ -22,9 +24,18 @@ class MachineryParameterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreMachineryParameterRequest $request): Response
     {
-        //
+        $machineryParameter = new MachineryParameter();
+
+        $machineryParameter->fill($request->safe()->except('machinery_id'));
+        if ($request->has('machinery_id')) {
+            $machineryParameter->machinery()->associate($request->machinery_id);
+        }
+        $machineryParameter->user()->associate($request->user());
+        $machineryParameter->save();
+
+        return response()->noContent(Response::HTTP_CREATED);
     }
 
     /**
