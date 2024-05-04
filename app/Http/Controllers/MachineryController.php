@@ -52,9 +52,13 @@ class MachineryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMachineryRequest $request, Machinery $machinery)
+    public function update(UpdateMachineryRequest $request, Machinery $machinery): Response
     {
-        //
+        $machinery->fill($request->validated());
+
+        $machinery->save();
+
+        return response()->noContent();
     }
 
     /**

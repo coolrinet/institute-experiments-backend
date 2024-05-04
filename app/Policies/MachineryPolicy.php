@@ -36,7 +36,7 @@ class MachineryPolicy
      */
     public function update(User $user, Machinery $machinery): bool
     {
-        return $machinery->user()->id == $user->id;
+        return $machinery->user->id == $user->id;
     }
 
     /**
@@ -44,6 +44,6 @@ class MachineryPolicy
      */
     public function delete(User $user, Machinery $machinery): bool
     {
-        return $machinery->user()->id == $user->id;
+        return $machinery->user->id == $user->id;
     }
 }

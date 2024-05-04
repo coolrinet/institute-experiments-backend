@@ -25,7 +25,7 @@ class UpdateMachineryRequest extends StoreMachineryRequest
         $rules = parent::rules();
 
         $rules['name'][-1] = Rule::unique('machineries')
-            ->ignore($this->route('machinery')->id);
+            ->ignore($this->route('machinery'));
 
         return $rules;
     }
