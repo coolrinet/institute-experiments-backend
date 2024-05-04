@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MachineryParameter\StoreMachineryParameterRequest;
+use App\Http\Requests\MachineryParameter\UpdateMachineryParameterRequest;
 use App\Http\Resources\MachineryParameterResource;
 use App\Models\MachineryParameter;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class MachineryParameterController extends Controller
 {
@@ -26,14 +27,14 @@ class MachineryParameterController extends Controller
      */
     public function store(StoreMachineryParameterRequest $request): Response
     {
-        $machineryParameter = new MachineryParameter();
+        DB::transaction(function () use ($request) {
+            $machineryParameter = new MachineryParameter();
 
-        $machineryParameter->fill($request->safe()->except('machinery_id'));
-        if ($request->has('machinery_id')) {
-            $machineryParameter->machinery()->associate($request->machinery_id);
-        }
-        $machineryParameter->user()->associate($request->user());
-        $machineryParameter->save();
+            $machineryParameter->fill($request->safe()->except('machinery_id'));
+            $machineryParameter->machinery()->associate($request->validated(['machinery_id']));
+            $machineryParameter->user()->associate($request->user());
+            $machineryParameter->save();
+        });
 
         return response()->noContent(Response::HTTP_CREATED);
     }
@@ -51,9 +52,18 @@ class MachineryParameterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, MachineryParameter $machineryParameter)
+    public function update(
+        UpdateMachineryParameterRequest $request,
+        MachineryParameter              $machineryParameter
+    ): Response
     {
-        //
+        DB::transaction(function () use ($request, $machineryParameter) {
+            $machineryParameter->fill($request->safe()->except('machinery_id'));
+            $machineryParameter->machinery()->associate($request->validated(['machinery_id']));
+            $machineryParameter->save();
+        });
+
+        return response()->noContent();
     }
 
     /**
