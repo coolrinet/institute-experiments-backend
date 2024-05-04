@@ -9,6 +9,7 @@ use App\Models\MachineryParameter;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class MachineryParameterController extends Controller
 {
@@ -54,9 +55,8 @@ class MachineryParameterController extends Controller
      */
     public function update(
         UpdateMachineryParameterRequest $request,
-        MachineryParameter              $machineryParameter
-    ): Response
-    {
+        MachineryParameter $machineryParameter
+    ): Response {
         DB::transaction(function () use ($request, $machineryParameter) {
             $machineryParameter->fill($request->safe()->except('machinery_id'));
             $machineryParameter->machinery()->associate($request->validated(['machinery_id']));
@@ -69,8 +69,12 @@ class MachineryParameterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(MachineryParameter $machineryParameter)
+    public function destroy(MachineryParameter $machineryParameter): Response
     {
-        //
+        Gate::authorize('delete', $machineryParameter);
+
+        $machineryParameter->delete();
+
+        return response()->noContent();
     }
 }
