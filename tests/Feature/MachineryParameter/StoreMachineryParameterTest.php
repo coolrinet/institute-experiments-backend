@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\MachineryParameter;
 
-use App\Enums\MachineryParameterType;
-use App\Enums\MachineryParameterValueType;
+use App\Enums\MachineryParameterTypeEnum;
+use App\Enums\MachineryParameterValueTypeEnum;
 use App\Models\Machinery;
 use App\Models\MachineryParameter;
 use App\Models\User;
@@ -28,16 +28,16 @@ class StoreMachineryParameterTest extends TestCase
         $response = $this->actingAs($this->user)
             ->postJson(route('machinery-parameters.store'), [
                 'name' => 'Test machinery parameter',
-                'parameter_type' => MachineryParameterType::INPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::INPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => $machinery->id,
             ]);
 
         $response->assertCreated();
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => $machinery->id,
         ]);
     }
@@ -47,15 +47,15 @@ class StoreMachineryParameterTest extends TestCase
         $response = $this->actingAs($this->user)
             ->postJson(route('machinery-parameters.store'), [
                 'name' => 'Test machinery parameter',
-                'parameter_type' => MachineryParameterType::INPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::INPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             ]);
 
         $response->assertCreated();
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
         ]);
     }
 
@@ -63,8 +63,8 @@ class StoreMachineryParameterTest extends TestCase
     {
         $response = $this->actingAs($this->user)
             ->postJson(route('machinery-parameters.store'), [
-                'parameter_type' => MachineryParameterType::INPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::INPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             ]);
 
         $response->assertUnprocessable();
@@ -78,8 +78,8 @@ class StoreMachineryParameterTest extends TestCase
         $response = $this->actingAs($this->user)
             ->postJson(route('machinery-parameters.store'), [
                 'name' => 'Test machinery parameter',
-                'parameter_type' => MachineryParameterType::INPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::INPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             ]);
 
         $response->assertUnprocessable();
@@ -101,15 +101,15 @@ class StoreMachineryParameterTest extends TestCase
     {
         $response = $this->postJson(route('machinery-parameters.store'), [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
         ]);
 
         $response->assertUnauthorized();
         $this->assertDatabaseMissing('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
         ]);
     }
 }

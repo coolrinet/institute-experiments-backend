@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\MachineryParameter;
 
-use App\Enums\MachineryParameterType;
-use App\Enums\MachineryParameterValueType;
+use App\Enums\MachineryParameterTypeEnum;
+use App\Enums\MachineryParameterValueTypeEnum;
 use App\Models\MachineryParameter;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -91,12 +91,12 @@ class MachineryParametersListTest extends TestCase
     public function test_authenticated_user_can_filter_machinery_parameters_by_parameter_type(): void
     {
         $machineryParametersCount =
-            MachineryParameter::filterByParameterType(MachineryParameterType::INPUT->value)->count();
+            MachineryParameter::filterByParameterType(MachineryParameterTypeEnum::INPUT->value)->count();
 
         $response = $this->actingAs($this->user)
             ->getJson(
                 route('machinery-parameters.index',
-                    ['parameter_type' => MachineryParameterType::INPUT->value])
+                    ['parameter_type' => MachineryParameterTypeEnum::INPUT->value])
             );
 
         $response->assertOk();
@@ -107,12 +107,12 @@ class MachineryParametersListTest extends TestCase
     public function test_authenticated_user_can_filter_machinery_parameters_by_value_type(): void
     {
         $machineryParametersCount =
-            MachineryParameter::filterByValueType(MachineryParameterValueType::QUANTITATIVE->value)->count();
+            MachineryParameter::filterByValueType(MachineryParameterValueTypeEnum::QUANTITATIVE->value)->count();
 
         $response = $this->actingAs($this->user)
             ->getJson(
                 route('machinery-parameters.index',
-                    ['value_type' => MachineryParameterValueType::QUANTITATIVE->value])
+                    ['value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE->value])
             );
 
         $response->assertOk();

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Enums\MachineryParameterType;
-use App\Enums\MachineryParameterValueType;
+use App\Enums\MachineryParameterTypeEnum;
+use App\Enums\MachineryParameterValueTypeEnum;
 use App\Models\Machinery;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,8 +22,8 @@ class MachineryParameterFactory extends Factory
     {
         return [
             'name' => fake()->unique()->word(),
-            'parameter_type' => fake()->randomElement(MachineryParameterType::values()),
-            'value_type' => fake()->randomElement(MachineryParameterValueType::values()),
+            'parameter_type' => fake()->randomElement(MachineryParameterTypeEnum::values()),
+            'value_type' => fake()->randomElement(MachineryParameterValueTypeEnum::values()),
             'user_id' => User::factory(),
             'machinery_id' => fake()->randomElement([Machinery::factory(), null]),
         ];

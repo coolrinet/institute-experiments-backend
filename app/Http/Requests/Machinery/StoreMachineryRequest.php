@@ -13,7 +13,7 @@ class StoreMachineryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Machinery::class);
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class StoreMachineryRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'unique:' . Machinery::class
+                'unique:'.Machinery::class,
             ],
             'description' => 'nullable|string',
         ];

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\MachineryParameter;
 
-use App\Enums\MachineryParameterType;
-use App\Enums\MachineryParameterValueType;
+use App\Enums\MachineryParameterTypeEnum;
+use App\Enums\MachineryParameterValueTypeEnum;
 use App\Models\Machinery;
 use App\Models\MachineryParameter;
 use App\Models\User;
@@ -23,10 +23,11 @@ class UpdateMachineryParameterTest extends TestCase
             ->recycle($this->user)
             ->create([
                 'name' => 'Test machinery parameter',
-                'parameter_type' => MachineryParameterType::INPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::INPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => null,
             ]);
+
         $this->machineryId = Machinery::factory()->create()->id;
     }
 
@@ -35,16 +36,16 @@ class UpdateMachineryParameterTest extends TestCase
         $response = $this->actingAs($this->user)
             ->putJson(route('machinery-parameters.update', $this->machineryParameter), [
                 'name' => 'Updated machinery parameter',
-                'parameter_type' => MachineryParameterType::OUTPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => $this->machineryId,
             ]);
 
         $response->assertNoContent();
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Updated machinery parameter',
-            'parameter_type' => MachineryParameterType::OUTPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => $this->machineryId,
         ]);
     }
@@ -54,16 +55,16 @@ class UpdateMachineryParameterTest extends TestCase
         $response = $this->actingAs(User::factory()->create())
             ->putJson(route('machinery-parameters.update', $this->machineryParameter), [
                 'name' => 'Updated machinery parameter',
-                'parameter_type' => MachineryParameterType::OUTPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => $this->machineryId,
             ]);
 
         $response->assertForbidden();
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => null,
         ]);
     }
@@ -72,8 +73,8 @@ class UpdateMachineryParameterTest extends TestCase
     {
         $response = $this->actingAs($this->user)
             ->putJson(route('machinery-parameters.update', $this->machineryParameter), [
-                'parameter_type' => MachineryParameterType::OUTPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => $this->machineryId,
             ]);
 
@@ -81,8 +82,8 @@ class UpdateMachineryParameterTest extends TestCase
         $response->assertInvalid('name');
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => null,
         ]);
     }
@@ -96,8 +97,8 @@ class UpdateMachineryParameterTest extends TestCase
         $response = $this->actingAs($this->user)
             ->putJson(route('machinery-parameters.update', $this->machineryParameter), [
                 'name' => 'Updated machinery parameter',
-                'parameter_type' => MachineryParameterType::OUTPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => $this->machineryId,
             ]);
 
@@ -105,8 +106,8 @@ class UpdateMachineryParameterTest extends TestCase
         $response->assertInvalid('name');
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => null,
         ]);
     }
@@ -123,8 +124,8 @@ class UpdateMachineryParameterTest extends TestCase
         $response->assertInvalid(['parameter_type', 'value_type']);
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => null,
         ]);
     }
@@ -133,29 +134,29 @@ class UpdateMachineryParameterTest extends TestCase
     {
         $response = $this->putJson(route('machinery-parameters.update', $this->machineryParameter), [
             'name' => 'Updated machinery parameter',
-            'parameter_type' => MachineryParameterType::OUTPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => $this->machineryId,
         ]);
 
         $response->assertUnauthorized();
         $this->assertDatabaseHas('machinery_parameters', [
             'name' => 'Test machinery parameter',
-            'parameter_type' => MachineryParameterType::INPUT,
-            'value_type' => MachineryParameterValueType::QUANTITATIVE,
+            'parameter_type' => MachineryParameterTypeEnum::INPUT,
+            'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
             'machinery_id' => null,
         ]);
     }
 
     public function test_user_cannot_update_machinery_parameter_that_does_not_exist(): void
     {
-        $id = Machinery::max('id') + 1;
+        $id = MachineryParameter::max('id') + 1;
 
         $response = $this->actingAs($this->user)
             ->putJson(route('machinery-parameters.update', $id), [
                 'name' => 'Updated machinery parameter',
-                'parameter_type' => MachineryParameterType::OUTPUT,
-                'value_type' => MachineryParameterValueType::QUANTITATIVE,
+                'parameter_type' => MachineryParameterTypeEnum::OUTPUT,
+                'value_type' => MachineryParameterValueTypeEnum::QUANTITATIVE,
                 'machinery_id' => $this->machineryId,
             ]);
 

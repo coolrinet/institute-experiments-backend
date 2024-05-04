@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\MachineryParameter;
 
-use App\Enums\MachineryParameterType;
-use App\Enums\MachineryParameterValueType;
+use App\Enums\MachineryParameterTypeEnum;
+use App\Enums\MachineryParameterValueTypeEnum;
 use App\Models\MachineryParameter;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -15,7 +15,7 @@ class StoreMachineryParameterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', MachineryParameter::class);
+        return true;
     }
 
     /**
@@ -26,9 +26,9 @@ class StoreMachineryParameterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:' . MachineryParameter::class],
-            'parameter_type' => ['required', Rule::in(MachineryParameterType::values())],
-            'value_type' => ['required', Rule::in(MachineryParameterValueType::values())],
+            'name' => ['required', 'string', 'max:255', 'unique:'.MachineryParameter::class],
+            'parameter_type' => ['required', Rule::in(MachineryParameterTypeEnum::values())],
+            'value_type' => ['required', Rule::in(MachineryParameterValueTypeEnum::values())],
             'machinery_id' => ['nullable', 'integer', 'exists:machineries,id'],
         ];
     }

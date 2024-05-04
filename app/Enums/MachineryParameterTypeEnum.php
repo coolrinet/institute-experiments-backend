@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use App\Traits\GetEnumValues;
 
-enum MachineryParameterType: string
+enum MachineryParameterTypeEnum: string
 {
     use GetEnumValues;
 

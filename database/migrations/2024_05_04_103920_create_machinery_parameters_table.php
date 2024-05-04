@@ -1,12 +1,13 @@
 <?php
 
-use App\Enums\MachineryParameterType;
-use App\Enums\MachineryParameterValueType;
+use App\Enums\MachineryParameterTypeEnum;
+use App\Enums\MachineryParameterValueTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -15,8 +16,8 @@ return new class extends Migration {
         Schema::create('machinery_parameters', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->enum('parameter_type', MachineryParameterType::values());
-            $table->enum('value_type', MachineryParameterValueType::values());
+            $table->enum('parameter_type', MachineryParameterTypeEnum::values());
+            $table->enum('value_type', MachineryParameterValueTypeEnum::values());
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('machinery_id')
                 ->nullable()
