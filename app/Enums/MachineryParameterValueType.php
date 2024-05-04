@@ -8,6 +8,6 @@ enum MachineryParameterValueType: string
 {
     use GetEnumValues;
 
-    case Quantitative = 'количественный';
-    case Quality = 'качественный';
+    case QUANTITATIVE = 'quantitative';
+    case QUALITY = 'quality';
 }

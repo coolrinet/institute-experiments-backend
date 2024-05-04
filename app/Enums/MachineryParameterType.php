@@ -8,6 +8,6 @@ enum MachineryParameterType: string
 {
     use GetEnumValues;
 
-    case Input = 'входной';
-    case Output = 'выходной';
+    case INPUT = 'input';
+    case OUTPUT = 'output';
 }
