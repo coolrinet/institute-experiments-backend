@@ -16,10 +16,10 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'middle_name' => $this->middle_name,
-            'is_admin' => $this->when($request->user()->is_admin, $this->is_admin),
+            'firstName' => $this->first_name,
+            'lastName' => $this->last_name,
+            'middleName' => $this->middle_name,
+            'isAdmin' => $this->when($request->user()->is_admin, $this->is_admin),
             'email' => $this->email
         ];
     }

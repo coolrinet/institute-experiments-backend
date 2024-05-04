@@ -18,7 +18,7 @@ class MachineryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'user' => new UserResource($this->whenLoaded('user'))
+            'user' => UserResource::make($this->whenLoaded('user'))
         ];
     }
 }
