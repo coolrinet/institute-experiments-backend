@@ -9,6 +9,7 @@ use App\Models\Machinery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class MachineryController extends Controller
 {
@@ -64,8 +65,12 @@ class MachineryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Machinery $machinery)
+    public function destroy(Machinery $machinery): Response
     {
-        //
+        Gate::authorize('delete', $machinery);
+
+        $machinery->delete();
+
+        return response()->noContent();
     }
 }
