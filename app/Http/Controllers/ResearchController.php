@@ -8,6 +8,7 @@ use App\Http\Resources\ResearchResource;
 use App\Models\Research;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Gate;
 
 class ResearchController extends Controller
 {
@@ -58,7 +59,9 @@ class ResearchController extends Controller
      */
     public function show(Research $research)
     {
-        //
+        Gate::authorize('view', $research);
+
+        return ResearchResource::make($research->load(['machinery', 'author', 'participants']));
     }
 
     /**
