@@ -25,11 +25,11 @@ class MachineryController extends Controller
         $machineries = Machinery::with('user');
 
         if ($name) {
-            $machineries = $machineries->filterByName($name);
+            $machineries = $machineries->where('name', 'like', '%' . $name . '%');
         }
 
         if ($userId) {
-            $machineries = $machineries->filterByUserId($userId);
+            $machineries = $machineries->whereUserId($userId);
         }
 
         return MachineryResource::collection($machineries->paginate());

@@ -28,23 +28,23 @@ class MachineryParameterController extends Controller
         $machineryParameters = MachineryParameter::with(['machinery', 'user']);
 
         if ($name) {
-            $machineryParameters = $machineryParameters->filterByName($name);
+            $machineryParameters = $machineryParameters->where('name', 'like', '%'.$name.'%');
         }
 
         if ($userId) {
-            $machineryParameters = $machineryParameters->filterByUserId($userId);
+            $machineryParameters = $machineryParameters->whereUserId($userId);
         }
 
         if ($machineryId) {
-            $machineryParameters = $machineryParameters->filterByMachineryId($machineryId);
+            $machineryParameters = $machineryParameters->whereMachineryId($machineryId);
         }
 
         if ($parameterType) {
-            $machineryParameters = $machineryParameters->filterByParameterType($parameterType);
+            $machineryParameters = $machineryParameters->whereParameterType($parameterType);
         }
 
         if ($valueType) {
-            $machineryParameters = $machineryParameters->filterByValueType($valueType);
+            $machineryParameters = $machineryParameters->whereValueType($valueType);
         }
 
         return MachineryParameterResource::collection(
