@@ -29,9 +29,14 @@ class Machinery extends Model
         return $this->hasMany(MachineryParameter::class);
     }
 
+    public function research(): HasMany
+    {
+        return $this->hasMany(Research::class);
+    }
+
     public function scopeFilterByName(Builder $query, string $name): Builder
     {
-        return $query->where('name', 'like', '%' . $name . '%');
+        return $query->where('name', 'like', '%'.$name.'%');
     }
 
     public function scopeFilterByUserId(Builder $query, mixed $userId): Builder
