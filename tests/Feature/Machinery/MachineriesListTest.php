@@ -48,7 +48,7 @@ class MachineriesListTest extends TestCase
 
     public function test_user_can_get_list_of_machineries_by_user_id(): void
     {
-        $machineriesCount = Machinery::where('user_id', $this->user->id)
+        $machineriesCount = Machinery::whereUserId($this->user->id)
             ->count();
 
         $response = $this->actingAs($this->user)

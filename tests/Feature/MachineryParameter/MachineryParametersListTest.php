@@ -34,14 +34,17 @@ class MachineryParametersListTest extends TestCase
 
     public function test_authenticated_user_can_filter_machinery_parameters_by_name(): void
     {
+        $machineryParameterName = MachineryParameter::first()->name;
+
         $machineryParametersCount =
-            MachineryParameter::filterByName(MachineryParameter::first()->name)->count();
+            MachineryParameter::where('name', 'like', '%'.$machineryParameterName.'%')
+                ->count();
 
         $response = $this->actingAs($this->user)
             ->getJson(
                 route(
                     'machinery-parameters.index',
-                    ['name' => MachineryParameter::first()->name]
+                    ['name' => $machineryParameterName]
                 )
             );
 
@@ -52,7 +55,7 @@ class MachineryParametersListTest extends TestCase
 
     public function test_authenticated_user_can_filter_machinery_parameters_by_user_id(): void
     {
-        $machineryParametersCount = MachineryParameter::filterByUserId($this->user->id)->count();
+        $machineryParametersCount = MachineryParameter::whereUserId($this->user->id)->count();
 
         $response = $this->actingAs($this->user)
             ->getJson(route('machinery-parameters.index', ['user_id' => $this->user->id]));
@@ -65,7 +68,7 @@ class MachineryParametersListTest extends TestCase
     public function test_authenticated_user_can_filter_machinery_parameters_by_machinery_id(): void
     {
         $machineryParametersBuilder =
-            MachineryParameter::filterByMachineryId(
+            MachineryParameter::whereMachineryId(
                 MachineryParameter::where(
                     'machinery_id', '!=', null
                 )
@@ -91,7 +94,7 @@ class MachineryParametersListTest extends TestCase
     public function test_authenticated_user_can_filter_machinery_parameters_by_parameter_type(): void
     {
         $machineryParametersCount =
-            MachineryParameter::filterByParameterType(MachineryParameterTypeEnum::INPUT->value)->count();
+            MachineryParameter::whereParameterType(MachineryParameterTypeEnum::INPUT->value)->count();
 
         $response = $this->actingAs($this->user)
             ->getJson(
@@ -107,7 +110,7 @@ class MachineryParametersListTest extends TestCase
     public function test_authenticated_user_can_filter_machinery_parameters_by_value_type(): void
     {
         $machineryParametersCount =
-            MachineryParameter::filterByValueType(MachineryParameterValueTypeEnum::QUANTITATIVE->value)->count();
+            MachineryParameter::whereValueType(MachineryParameterValueTypeEnum::QUANTITATIVE->value)->count();
 
         $response = $this->actingAs($this->user)
             ->getJson(

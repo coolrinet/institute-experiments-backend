@@ -49,8 +49,8 @@ class ShowResearchTest extends TestCase
 
     public function test_user_cannot_see_research_where_he_is_not_participant(): void
     {
-        $researchList = Research::whereIsPublic(false)
-            ->whereNot('author_id', $this->user->id)
+        $researchList = Research::whereNot('author_id', $this->user->id)
+            ->has('participants')
             ->get();
 
         $research = null;
