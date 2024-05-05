@@ -2,15 +2,19 @@
 
 use App\Http\Controllers\MachineryController;
 use App\Http\Controllers\MachineryParameterController;
+use App\Http\Controllers\ResearchController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', function (Request $request) {
-        return $request->user();
+        return UserResource::make($request->user());
     });
 
     Route::apiResource('machineries', MachineryController::class);
 
     Route::apiResource('machinery-parameters', MachineryParameterController::class);
+
+    Route::apiResource('research', ResearchController::class);
 });
