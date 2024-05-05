@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MachinerySeeder::class,
             MachineryParameterSeeder::class,
+            ResearchSeeder::class,
         ]);
     }
 }

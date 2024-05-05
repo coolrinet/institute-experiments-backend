@@ -17,7 +17,7 @@ class MachineryParameterSeeder extends Seeder
         $users = User::all();
         $machineries = Machinery::all();
 
-        MachineryParameter::factory(30)
+        MachineryParameter::factory(15)
             ->recycle($users)
             ->recycle($machineries)
             ->create();
