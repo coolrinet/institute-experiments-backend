@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -58,5 +59,16 @@ class User extends Authenticatable
     public function machineryParameters(): HasMany
     {
         return $this->hasMany(MachineryParameter::class);
+    }
+
+    public function research(): HasMany
+    {
+        return $this->hasMany(Research::class, 'author_id');
+    }
+
+    public function participatoryResearch(): BelongsToMany
+    {
+        return $this->belongsToMany(Research::class)
+            ->as('participatoryResearch');
     }
 }

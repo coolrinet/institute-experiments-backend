@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MachineryParameter extends Model
 {
@@ -27,6 +28,17 @@ class MachineryParameter extends Model
     public function machinery(): BelongsTo
     {
         return $this->belongsTo(Machinery::class);
+    }
+
+    public function research(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Research::class,
+            'research_machinery_parameter',
+            'parameter_id',
+            'research_id'
+        )
+            ->as('research');
     }
 
     public function scopeFilterByName(Builder $query, string $name): Builder
