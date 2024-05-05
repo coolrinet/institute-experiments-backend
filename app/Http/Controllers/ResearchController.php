@@ -8,6 +8,8 @@ use App\Http\Resources\ResearchResource;
 use App\Models\Research;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ResearchController extends Controller
@@ -57,7 +59,7 @@ class ResearchController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Research $research)
+    public function show(Research $research): ResearchResource
     {
         Gate::authorize('view', $research);
 
@@ -75,8 +77,16 @@ class ResearchController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Research $research)
+    public function destroy(Research $research): Response
     {
-        //
+        Gate::authorize('delete', $research);
+
+        DB::transaction(function () use ($research) {
+            $research->participants()->detach();
+            $research->parameters()->detach();
+            $research->delete();
+        });
+
+        return response()->noContent();
     }
 }
