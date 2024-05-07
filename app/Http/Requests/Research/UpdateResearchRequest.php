@@ -23,7 +23,7 @@ class UpdateResearchRequest extends StoreResearchRequest
     {
         $rules = parent::rules();
 
-        $rules['name'][-1] = Rule::unique('research')->ignore($this->route('research'));
+        $rules['name'][count($rules['name']) - 1] = Rule::unique('research')->ignore($this->route('research'));
 
         return $rules;
     }

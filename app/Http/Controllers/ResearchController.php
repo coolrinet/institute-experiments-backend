@@ -51,9 +51,25 @@ class ResearchController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreResearchRequest $request)
+    public function store(StoreResearchRequest $request): Response
     {
-        //
+        DB::transaction(function () use ($request) {
+            $research = new Research();
+
+            $research->fill($request->safe()->except(['machinery_id', 'participants', 'parameters']));
+            $research->machinery()->associate($request->validated('machinery_id'));
+            $research->author()->associate($request->user());
+
+            $research->save();
+
+            $research->parameters()->attach($request->validated('parameters'));
+
+            if ($request->has('participants')) {
+                $research->participants()->attach($request->validated('participants'));
+            }
+        });
+
+        return response()->noContent(Response::HTTP_CREATED);
     }
 
     /**
@@ -69,9 +85,23 @@ class ResearchController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateResearchRequest $request, Research $research)
+    public function update(UpdateResearchRequest $request, Research $research): Response
     {
-        //
+        DB::transaction(function () use ($research, $request) {
+            $research->fill($request->safe()->except(['machinery_id', 'participants', 'parameters']));
+            $research->machinery()->associate($request->validated('machinery_id'));
+            $research->parameters()->sync($request->validated('parameters'));
+
+            if ($request->has('participants')) {
+                $research->participants()->sync($request->validated('participants'));
+            } else {
+                $research->participants()->detach($request->validated('participants'));
+            }
+
+            $research->save();
+        });
+
+        return response()->noContent();
     }
 
     /**

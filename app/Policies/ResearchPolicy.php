@@ -14,7 +14,7 @@ class ResearchPolicy
     {
         return $research->is_public
             || $user->is($research->author)
-            || $research->participants->contains($user);
+            || $research->has('participants') && $research->participants->contains($user);
     }
 
     /**
@@ -22,8 +22,7 @@ class ResearchPolicy
      */
     public function update(User $user, Research $research): bool
     {
-        return $user->is($research->author)
-            || $research->participants->contains($user);
+        return $user->is($research->author);
     }
 
     /**

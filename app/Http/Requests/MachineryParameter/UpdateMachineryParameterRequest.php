@@ -23,7 +23,7 @@ class UpdateMachineryParameterRequest extends StoreMachineryParameterRequest
     {
         $rules = parent::rules();
 
-        $rules['name'][-1] = Rule::unique('machinery_parameters')
+        $rules['name'][count($rules['name']) - 1] = Rule::unique('machinery_parameters')
             ->ignore($this->route('machinery_parameter'));
 
         return $rules;
