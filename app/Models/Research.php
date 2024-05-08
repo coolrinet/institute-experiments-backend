@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Research extends Model
 {
@@ -45,5 +46,10 @@ class Research extends Model
             'parameter_id'
         )
             ->as('parameters');
+    }
+
+    public function experiments(): HasMany
+    {
+        return $this->hasMany(Experiment::class);
     }
 }

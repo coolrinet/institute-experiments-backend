@@ -39,4 +39,9 @@ class MachineryParameter extends Model
         )
             ->as('research');
     }
+
+    public function experiments(): BelongsToMany
+    {
+        return $this->belongsToMany(Experiment::class);
+    }
 }

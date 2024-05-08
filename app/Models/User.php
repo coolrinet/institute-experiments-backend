@@ -71,4 +71,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Research::class)
             ->as('participatoryResearch');
     }
+
+    public function experiments(): HasMany
+    {
+        return $this->hasMany(Experiment::class);
+    }
 }
