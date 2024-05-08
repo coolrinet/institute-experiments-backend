@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             MachinerySeeder::class,
             MachineryParameterSeeder::class,
             ResearchSeeder::class,
+            ExperimentSeeder::class,
         ]);
     }
 }
