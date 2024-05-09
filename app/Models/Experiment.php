@@ -43,8 +43,8 @@ class Experiment extends Model
             'experiment_id',
             'parameter_id'
         )
-            ->using(QuantitativeParameter::class)
-            ->as('quantitativeInputs');
+            ->withPivot('value')
+            ->using(QuantitativeParameter::class);
     }
 
     public function qualityInputs(): BelongsToMany
@@ -55,8 +55,7 @@ class Experiment extends Model
             'experiment_id',
             'parameter_id'
         )
-            ->withPivot('value')
-            ->as('qualityInputs');
+            ->withPivot('value');
     }
 
     public function quantitativeOutputs(): BelongsToMany
@@ -67,8 +66,8 @@ class Experiment extends Model
             'experiment_id',
             'parameter_id'
         )
-            ->using(QuantitativeParameter::class)
-            ->as('quantitativeOutputs');
+            ->withPivot('value')
+            ->using(QuantitativeParameter::class);
     }
 
     public function qualityOutputs(): BelongsToMany
@@ -79,7 +78,6 @@ class Experiment extends Model
             'experiment_id',
             'parameter_id'
         )
-            ->withPivot('value')
-            ->as('qualityOutputs');
+            ->withPivot('value');
     }
 }

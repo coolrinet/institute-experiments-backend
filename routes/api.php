@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExperimentController;
 use App\Http\Controllers\MachineryController;
 use App\Http\Controllers\MachineryParameterController;
 use App\Http\Controllers\ResearchController;
@@ -17,4 +18,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('machinery-parameters', MachineryParameterController::class);
 
     Route::apiResource('research', ResearchController::class);
+
+    Route::apiResource('research.experiments', ExperimentController::class);
 });
