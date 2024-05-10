@@ -111,6 +111,12 @@ class ResearchController extends Controller
     {
         Gate::authorize('delete', $research);
 
+        abort_if(
+            $research->experiments()->exists(),
+            Response::HTTP_CONFLICT,
+            'Cannot delete research with experiments'
+        );
+
         DB::transaction(function () use ($research) {
             $research->participants()->detach();
             $research->parameters()->detach();

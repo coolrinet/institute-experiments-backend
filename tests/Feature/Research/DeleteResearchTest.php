@@ -2,8 +2,13 @@
 
 namespace Tests\Feature\Research;
 
+use App\Models\Experiment;
 use App\Models\Research;
 use App\Models\User;
+use Database\Seeders\MachineryParameterSeeder;
+use Database\Seeders\MachinerySeeder;
+use Database\Seeders\ResearchSeeder;
+use Database\Seeders\UserSeeder;
 use Tests\TestCase;
 
 class DeleteResearchTest extends TestCase
@@ -12,7 +17,12 @@ class DeleteResearchTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed();
+        $this->seed([
+            UserSeeder::class,
+            MachinerySeeder::class,
+            MachineryParameterSeeder::class,
+            ResearchSeeder::class,
+        ]);
 
         $this->user = User::has('research')->get()
             ->filter(function (User $user) {
@@ -67,5 +77,18 @@ class DeleteResearchTest extends TestCase
             ->deleteJson(route('research.destroy', $id));
 
         $response->assertNotFound();
+    }
+
+    public function test_user_cannot_delete_research_with_experiments(): void
+    {
+        Experiment::factory(5)
+            ->for($this->research)
+            ->create();
+
+        $response = $this->actingAs($this->user)
+            ->deleteJson(route('research.destroy', $this->research));
+
+        $response->assertConflict();
+        $this->assertModelExists($this->research);
     }
 }
