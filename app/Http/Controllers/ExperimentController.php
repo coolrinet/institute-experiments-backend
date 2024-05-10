@@ -8,6 +8,8 @@ use App\Http\Resources\ExperimentResource;
 use App\Models\Experiment;
 use App\Models\Research;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ExperimentController extends Controller
@@ -29,9 +31,24 @@ class ExperimentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreExperimentRequest $request)
+    public function store(Research $research, StoreExperimentRequest $request): Response
     {
-        //
+        DB::transaction(function () use ($research, $request) {
+            $experiment = new Experiment();
+
+            $experiment->fill($request->safe()->only(['name', 'date']));
+            $experiment->research()->associate($research);
+            $experiment->user()->associate($request->user());
+
+            $experiment->save();
+
+            $experiment->quantitativeInputs()->attach($request->validated('quantitative_inputs'));
+            $experiment->qualityInputs()->attach($request->validated('quality_inputs'));
+            $experiment->quantitativeOutputs()->attach($request->validated('quantitative_outputs'));
+            $experiment->qualityOutputs()->attach($request->validated('quality_outputs'));
+        });
+
+        return response()->noContent(Response::HTTP_CREATED);
     }
 
     /**
