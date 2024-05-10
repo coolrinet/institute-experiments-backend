@@ -3,22 +3,16 @@
 namespace Tests\Feature\Experiment;
 
 use App\Enums\MachineryParameterTypeEnum;
-use App\Enums\MachineryParameterValueTypeEnum;
-use App\Models\MachineryParameter;
 use App\Models\Research;
 use App\Models\User;
 use Database\Seeders\MachineryParameterSeeder;
 use Database\Seeders\MachinerySeeder;
 use Database\Seeders\ResearchSeeder;
 use Database\Seeders\UserSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class StoreExperimentTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,36 +44,6 @@ class StoreExperimentTest extends TestCase
             'quantitative_outputs' => $this->quantitativeOutputs,
             'quality_outputs' => $this->qualityOutputs,
         ];
-    }
-
-    protected function prepareQuantitativeValues(
-        Research $research,
-        MachineryParameterTypeEnum $parameterType
-    ): array {
-        return $research->parameters()
-            ->whereParameterType($parameterType->value)
-            ->whereValueType(MachineryParameterValueTypeEnum::QUANTITATIVE->value)
-            ->get()->map(function (MachineryParameter $machineryParameter) {
-                return [
-                    'parameter_id' => $machineryParameter->id,
-                    'value' => $this->faker->randomFloat(2, 0, 100),
-                ];
-            })->toArray();
-    }
-
-    protected function prepareQualityValues(
-        Research $research,
-        MachineryParameterTypeEnum $parameterType
-    ): array {
-        return $research->parameters()
-            ->whereParameterType($parameterType->value)
-            ->whereValueType(MachineryParameterValueTypeEnum::QUALITY->value)
-            ->get()->map(function (MachineryParameter $machineryParameter) {
-                return [
-                    'parameter_id' => $machineryParameter->id,
-                    'value' => $this->faker->unique()->word(),
-                ];
-            })->toArray();
     }
 
     public function test_author_of_research_can_store_experiment(): void

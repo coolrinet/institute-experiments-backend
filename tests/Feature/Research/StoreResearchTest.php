@@ -8,13 +8,10 @@ use App\Models\User;
 use Database\Seeders\MachineryParameterSeeder;
 use Database\Seeders\MachinerySeeder;
 use Database\Seeders\UserSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class StoreResearchTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();

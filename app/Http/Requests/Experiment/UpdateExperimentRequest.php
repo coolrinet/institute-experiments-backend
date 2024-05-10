@@ -23,7 +23,7 @@ class UpdateExperimentRequest extends StoreExperimentRequest
     {
         $rules = parent::rules();
 
-        $rules['name'][count($rules) - 1] = Rule::unique('experiments')->ignore($this->route('experiment'));
+        $rules['name'][count($rules['name']) - 1] = Rule::unique('experiments')->ignore($this->route('experiment'));
 
         return $rules;
     }

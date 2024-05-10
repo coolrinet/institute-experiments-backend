@@ -5,13 +5,10 @@ namespace Tests\Feature\Research;
 use App\Models\Machinery;
 use App\Models\Research;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ResearchListTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();

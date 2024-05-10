@@ -4,13 +4,10 @@ namespace Tests\Feature\Experiment;
 
 use App\Models\Research;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExperimentListTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();

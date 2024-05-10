@@ -71,16 +71,65 @@ class ExperimentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateExperimentRequest $request, Experiment $experiment)
-    {
-        //
+    public function update(
+        Research $research,
+        UpdateExperimentRequest $request,
+        Experiment $experiment
+    ): Response {
+        DB::transaction(function () use ($request, $experiment) {
+            $experiment->fill($request->safe()->only(['name', 'date']));
+
+            $quantitativeInputs = $request->validated('quantitative_inputs');
+            $qualityInputs = $request->validated('quality_inputs');
+            $quantitativeOutputs = $request->validated('quantitative_outputs');
+            $qualityOutputs = $request->validated('quality_outputs');
+
+            foreach ($quantitativeInputs as $quantitativeInput) {
+                $experiment->quantitativeInputs()->updateExistingPivot($quantitativeInput['parameter_id'], [
+                    'value' => $quantitativeInput['value'],
+                ]);
+            }
+
+            foreach ($qualityInputs as $qualityInput) {
+                $experiment->qualityInputs()->updateExistingPivot($qualityInput['parameter_id'], [
+                    'value' => $qualityInput['value'],
+                ]);
+            }
+
+            foreach ($quantitativeOutputs as $quantitativeOutput) {
+                $experiment->quantitativeOutputs()->updateExistingPivot($quantitativeOutput['parameter_id'], [
+                    'value' => $quantitativeOutput['value'],
+                ]);
+            }
+
+            foreach ($qualityOutputs as $qualityOutput) {
+                $experiment->qualityOutputs()->updateExistingPivot($qualityOutput['parameter_id'], [
+                    'value' => $qualityOutput['value'],
+                ]);
+            }
+
+            $experiment->save();
+        });
+
+        return response()->noContent();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Experiment $experiment)
+    public function destroy(Research $research, Experiment $experiment): Response
     {
-        //
+        Gate::authorize('delete', $experiment);
+
+        DB::transaction(function () use ($experiment) {
+            $experiment->quantitativeInputs()->detach();
+            $experiment->qualityInputs()->detach();
+            $experiment->quantitativeOutputs()->detach();
+            $experiment->qualityOutputs()->detach();
+
+            $experiment->delete();
+        });
+
+        return response()->noContent();
     }
 }

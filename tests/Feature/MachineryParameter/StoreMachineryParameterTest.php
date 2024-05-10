@@ -7,13 +7,10 @@ use App\Enums\MachineryParameterValueTypeEnum;
 use App\Models\Machinery;
 use App\Models\MachineryParameter;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class StoreMachineryParameterTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();
