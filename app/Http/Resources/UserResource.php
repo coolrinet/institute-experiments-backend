@@ -20,7 +20,7 @@ class UserResource extends JsonResource
             'lastName' => $this->last_name,
             'middleName' => $this->middle_name,
             'isAdmin' => $this->when($request->user()->is_admin, $this->is_admin),
-            'email' => $this->email
+            'email' => $this->email,
         ];
     }
 }
