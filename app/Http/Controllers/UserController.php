@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -50,8 +50,37 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): Response
     {
-        Gate::authorize('delete', $user);
+        abort_if(
+            $user->experiments()->exists(),
+            Response::HTTP_CONFLICT,
+            'Cannot delete user with experiments'
+        );
+
+        abort_if(
+            $user->machineries()->exists(),
+            Response::HTTP_CONFLICT,
+            'Cannot delete user with machineries'
+        );
+
+        abort_if(
+            $user->research()->exists(),
+            Response::HTTP_CONFLICT,
+            'Cannot delete user with research'
+        );
+
+        abort_if(
+            $user->machineryParameters()->exists(),
+            Response::HTTP_CONFLICT,
+            'Cannot delete user with machinery parameters'
+        );
+
+        DB::transaction(function () use ($user) {
+            $user->participatoryResearch()->detach();
+            $user->delete();
+        });
+
+        return response()->noContent();
     }
 }
