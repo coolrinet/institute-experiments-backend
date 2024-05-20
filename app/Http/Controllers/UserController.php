@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Resources\UserResource;
+use App\Mail\UserAdded;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -40,9 +42,11 @@ class UserController extends Controller
     {
         $password = Str::password();
 
-        User::create(array_merge($request->validated(), [
+        $newUser = User::create(array_merge($request->validated(), [
             'password' => Hash::make($password),
         ]));
+
+        Mail::to($newUser)->send(new UserAdded($newUser, $password));
 
         return response()->noContent(Response::HTTP_CREATED);
     }
