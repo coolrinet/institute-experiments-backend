@@ -19,18 +19,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): ResourceCollection
+    public function index(): ResourceCollection
     {
-        $admins = $request->query('admins');
-        $email = $request->query('email');
-
-        $users = User::when($admins, function ($query) {
-            return $query->where('is_admin', true);
-        })
-            ->when($email, function ($query) use ($email) {
-                return $query->where('email', 'like', "%{$email}%");
-            })
-            ->paginate();
+        $users = User::paginate(5);
 
         return UserResource::collection($users);
     }

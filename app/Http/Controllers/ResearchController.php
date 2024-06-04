@@ -26,7 +26,7 @@ class ResearchController extends Controller
         $research = Research::with(['author', 'machinery']);
 
         if ($name) {
-            $research = $research->where('name', 'like', '%'.$name.'%');
+            $research = $research->where('name', 'like', '%' . $name . '%');
         }
 
         if ($machineryId) {
@@ -44,7 +44,7 @@ class ResearchController extends Controller
         }
 
         return ResearchResource::collection(
-            $research->paginate()
+            $research->paginate(5)
         );
     }
 

@@ -24,7 +24,7 @@ class ExperimentController extends Controller
         return ExperimentResource::collection(
             $research->experiments()
                 ->with(['user'])
-                ->paginate()
+                ->paginate(5)
         );
     }
 

@@ -32,7 +32,7 @@ class MachineryController extends Controller
             $machineries = $machineries->whereUserId($userId);
         }
 
-        return MachineryResource::collection($machineries->paginate());
+        return MachineryResource::collection($machineries->paginate(5));
     }
 
     /**

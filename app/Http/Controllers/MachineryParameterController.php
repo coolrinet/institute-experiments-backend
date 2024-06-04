@@ -28,7 +28,7 @@ class MachineryParameterController extends Controller
         $machineryParameters = MachineryParameter::with(['machinery', 'user']);
 
         if ($name) {
-            $machineryParameters = $machineryParameters->where('name', 'like', '%'.$name.'%');
+            $machineryParameters = $machineryParameters->where('name', 'like', '%' . $name . '%');
         }
 
         if ($userId) {
@@ -48,7 +48,7 @@ class MachineryParameterController extends Controller
         }
 
         return MachineryParameterResource::collection(
-            $machineryParameters->paginate()
+            $machineryParameters->paginate(5)
         );
     }
 
