@@ -7,6 +7,7 @@ use App\Http\Requests\Experiment\UpdateExperimentRequest;
 use App\Http\Resources\ExperimentResource;
 use App\Models\Experiment;
 use App\Models\Research;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -17,14 +18,16 @@ class ExperimentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Research $research): ResourceCollection
+    public function index(Research $research, Request $request): ResourceCollection
     {
         Gate::authorize('viewAny', [Experiment::class, $research->id]);
 
+        $page = $request->query('page');
+
+        $experiments = $research->experiments()->with(['user']);
+
         return ExperimentResource::collection(
-            $research->experiments()
-                ->with(['user'])
-                ->paginate(5)
+            $page ? $experiments : $experiments->paginate(5),
         );
     }
 

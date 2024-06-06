@@ -20,7 +20,7 @@ class MachineryController extends Controller
     public function index(Request $request): ResourceCollection
     {
         $name = $request->query('name');
-        $userId = $request->query('user_id');
+        $page = $request->query('page');
 
         $machineries = Machinery::with('user');
 
@@ -28,11 +28,13 @@ class MachineryController extends Controller
             $machineries = $machineries->where('name', 'like', '%' . $name . '%');
         }
 
-        if ($userId) {
-            $machineries = $machineries->whereUserId($userId);
+        if ($page) {
+            $machineries = $machineries->paginate(5);
+        } else {
+            $machineries = $machineries->get();
         }
 
-        return MachineryResource::collection($machineries->paginate(5));
+        return MachineryResource::collection($machineries);
     }
 
     /**

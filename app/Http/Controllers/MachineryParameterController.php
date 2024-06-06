@@ -20,19 +20,15 @@ class MachineryParameterController extends Controller
     public function index(Request $request): ResourceCollection
     {
         $name = $request->query('name');
-        $userId = $request->query('user_id');
         $machineryId = $request->query('machinery_id');
         $parameterType = $request->query('parameter_type');
         $valueType = $request->query('value_type');
+        $page = $request->query('page');
 
         $machineryParameters = MachineryParameter::with(['machinery', 'user']);
 
         if ($name) {
             $machineryParameters = $machineryParameters->where('name', 'like', '%' . $name . '%');
-        }
-
-        if ($userId) {
-            $machineryParameters = $machineryParameters->whereUserId($userId);
         }
 
         if ($machineryId) {
@@ -47,8 +43,14 @@ class MachineryParameterController extends Controller
             $machineryParameters = $machineryParameters->whereValueType($valueType);
         }
 
+        if ($page) {
+            $machineryParameters = $machineryParameters->paginate(5);
+        } else {
+            $machineryParameters = $machineryParameters->get();
+        }
+
         return MachineryParameterResource::collection(
-            $machineryParameters->paginate(5)
+            $machineryParameters
         );
     }
 

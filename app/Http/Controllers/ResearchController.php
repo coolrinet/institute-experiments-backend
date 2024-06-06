@@ -22,6 +22,7 @@ class ResearchController extends Controller
         $name = $request->query('name');
         $machineryId = $request->query('machinery_id');
         $authorId = $request->query('author_id');
+        $page = $request->query('page');
 
         $research = Research::with(['author', 'machinery']);
 
@@ -43,8 +44,14 @@ class ResearchController extends Controller
                 ->where('is_public', true);
         }
 
+        if ($page) {
+            $research = $research->paginate(5);
+        } else {
+            $research = $research->get();
+        }
+
         return ResearchResource::collection(
-            $research->paginate(5)
+            $research
         );
     }
 
