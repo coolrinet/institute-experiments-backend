@@ -25,7 +25,7 @@ class MachineryController extends Controller
         $machineries = Machinery::with('user');
 
         if ($name) {
-            $machineries = $machineries->where('name', 'like', '%' . $name . '%');
+            $machineries = $machineries->where('name', 'like', '%'.$name.'%');
         }
 
         if ($page) {
@@ -82,7 +82,7 @@ class MachineryController extends Controller
         abort_if(
             $machinery->parameters()->exists(),
             Response::HTTP_CONFLICT,
-            'Cannot delete machinery with parameters'
+            'Нельзя удалить установку, к которой привязаны параметры'
         );
 
         $machinery->delete();

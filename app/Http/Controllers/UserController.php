@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -33,6 +34,8 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): Response
     {
+        Gate::authorize('create', User::class);
+
         $password = Str::password();
 
         $newUser = User::create(array_merge($request->validated(), [
@@ -49,28 +52,30 @@ class UserController extends Controller
      */
     public function destroy(User $user): Response
     {
+        Gate::authorize('delete', $user);
+
         abort_if(
             $user->experiments()->exists(),
             Response::HTTP_CONFLICT,
-            'Cannot delete user with experiments'
+            'Нельзя удалить пользователя, у которого имеются добавленные эксперименты'
         );
 
         abort_if(
             $user->machineries()->exists(),
             Response::HTTP_CONFLICT,
-            'Cannot delete user with machineries'
+            'Нельзя удалить пользователя, у которого имеются добавленные установки'
         );
 
         abort_if(
             $user->research()->exists(),
             Response::HTTP_CONFLICT,
-            'Cannot delete user with research'
+            'Нельзя удалить пользователя, у которого имеются добавленные исследования'
         );
 
         abort_if(
             $user->machineryParameters()->exists(),
             Response::HTTP_CONFLICT,
-            'Cannot delete user with machinery parameters'
+            'Нельзя удалить пользователя, у которого имеются добавленные параметры установок'
         );
 
         DB::transaction(function () use ($user) {

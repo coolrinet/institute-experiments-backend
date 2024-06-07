@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Research\StoreResearchRequest;
 use App\Http\Requests\Research\UpdateResearchRequest;
 use App\Http\Resources\ResearchResource;
+use App\Models\MachineryParameter;
 use App\Models\Research;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -58,13 +59,17 @@ class ResearchController extends Controller
         DB::transaction(function () use ($request) {
             $research = new Research();
 
-            $research->fill($request->safe()->except(['machinery_id', 'participants', 'parameters']));
+            $research->fill($request->safe()->except(['machinery_id', 'participants']));
             $research->machinery()->associate($request->validated('machinery_id'));
             $research->author()->associate($request->user());
 
             $research->save();
 
-            $research->parameters()->attach($request->validated('parameters'));
+            $parameters = MachineryParameter::where(function (Builder $query) use ($request) {
+                $query->whereIn('machinery_id', [$request->validated('machinery_id'), null]);
+            })->pluck('id');
+
+            $research->parameters()->attach($parameters);
 
             if ($request->has('participants')) {
                 $research->participants()->attach($request->validated('participants'));
@@ -90,9 +95,21 @@ class ResearchController extends Controller
     public function update(UpdateResearchRequest $request, Research $research): Response
     {
         DB::transaction(function () use ($research, $request) {
-            $research->fill($request->safe()->except(['machinery_id', 'participants', 'parameters']));
-            $research->machinery()->associate($request->validated('machinery_id'));
-            $research->parameters()->sync($request->validated('parameters'));
+            $research->fill($request->safe()->except(['machinery_id', 'participants']));
+
+            $machineryId = $request->validated('machinery_id');
+
+            if ($machineryId !== $research->machinery->id) {
+                abort_if($research->experiments()->exists(), Response::HTTP_CONFLICT, 'Нельзя изменить установку, если в исследовании уже есть эксперименты');
+
+                $research->machinery()->associate($request->validated('machinery_id'));
+
+                $parameters = MachineryParameter::where(function (Builder $query) use ($request) {
+                    $query->whereIn('machinery_id', [$request->validated('machinery_id'), null]);
+                })->pluck('id');
+
+                $research->parameters()->attach($parameters);
+            }
 
             if ($request->has('participants')) {
                 $research->participants()->sync($request->validated('participants'));
@@ -116,7 +133,7 @@ class ResearchController extends Controller
         abort_if(
             $research->experiments()->exists(),
             Response::HTTP_CONFLICT,
-            'Cannot delete research with experiments'
+            'Нельзя удалить исследование с экспериментами'
         );
 
         DB::transaction(function () use ($research) {

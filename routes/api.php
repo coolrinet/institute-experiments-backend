@@ -15,8 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->group(function () {
             Route::get('/', 'showProfile')->name('show');
             Route::put('/', 'updateProfile')->name('update');
-            Route::delete('/', 'deleteProfile')->name('delete')
-                ->middleware();
+            Route::delete('/', 'deleteProfile')->name('delete');
         });
 
     Route::apiResource('machineries', MachineryController::class);
@@ -28,6 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('research.experiments', ExperimentController::class);
 
     Route::apiResource('users', UserController::class)
-        ->except(['update', 'show'])
-        ->middleware('is_admin');
+        ->except(['update', 'show']);
 });

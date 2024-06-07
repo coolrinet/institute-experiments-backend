@@ -49,12 +49,27 @@ class ProfileController extends Controller
         $user = $request->user();
 
         abort_if(
-            $user->machineryParameters()->exists()
-            || $user->machineries()->exists()
-            || $user->experiments()->exists()
-            || $user->research()->exists(),
+            $user->experiments()->exists(),
             Response::HTTP_CONFLICT,
-            'You cannot delete your profile with related data.'
+            'Нельзя удалить профиль, так как у вас имеются добавленные эксперименты'
+        );
+
+        abort_if(
+            $user->machineries()->exists(),
+            Response::HTTP_CONFLICT,
+            'Нельзя удалить профиль, так как у вас имеются добавленные установки'
+        );
+
+        abort_if(
+            $user->research()->exists(),
+            Response::HTTP_CONFLICT,
+            'Нельзя удалить профиль, так как у вас имеются добавленные исследования'
+        );
+
+        abort_if(
+            $user->machineryParameters()->exists(),
+            Response::HTTP_CONFLICT,
+            'Нельзя удалить профиль, так как у вас имеются добавленные параметры установок'
         );
 
         Auth::guard('web')->logout();
