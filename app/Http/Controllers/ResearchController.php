@@ -32,7 +32,7 @@ class ResearchController extends Controller
             });
 
         if ($name) {
-            $research = $research->where('name', 'like', '%' . $name . '%');
+            $research = $research->where('name', 'like', '%'.$name.'%');
         }
 
         if ($machineryId) {

@@ -11,6 +11,19 @@ class Experiment extends Model
 {
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::created(function (Experiment $experiment) {
+            $research = $experiment->research;
+
+            if (is_null($research->last_experiment_date)
+                || $experiment->date->gt($research->last_experiment_date)) {
+                $research->last_experiment_date = $experiment->date;
+                $research->save();
+            }
+        });
+    }
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -21,7 +34,7 @@ class Experiment extends Model
     protected function casts(): array
     {
         return [
-            'date' => 'immutable_date',
+            'date' => 'immutable_date:j F Y',
         ];
     }
 

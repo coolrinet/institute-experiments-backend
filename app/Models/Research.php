@@ -21,6 +21,13 @@ class Research extends Model
         'machinery_id',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'last_experiment_date' => 'immutable_date:j F Y',
+        ];
+    }
+
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
