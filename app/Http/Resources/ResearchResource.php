@@ -19,7 +19,7 @@ class ResearchResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'lastExperimentDate' => Date::parse($this->last_experiment_date)->translatedFormat('j F Y'),
+            'lastExperimentDate' => $this->last_experiment_date ? Date::parse($this->last_experiment_date)->translatedFormat('j F Y') : null,
             'machinery' => MachineryResource::make($this->whenLoaded('machinery')),
             'parameters' => MachineryParameterResource::collection($this->whenLoaded('parameters')),
             'author' => UserResource::make($this->whenLoaded('author')),
