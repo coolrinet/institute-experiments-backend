@@ -19,7 +19,6 @@ class ResearchResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'lastExperimentDate' => $this->last_experiment_date,
-            'isPublic' => $this->when($this->author_id === $request->user()->id, $this->is_public),
             'machinery' => MachineryResource::make($this->whenLoaded('machinery')),
             'parameters' => MachineryParameterResource::collection($this->whenLoaded('parameters')),
             'author' => UserResource::make($this->whenLoaded('author')),

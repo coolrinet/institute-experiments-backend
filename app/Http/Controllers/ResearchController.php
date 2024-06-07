@@ -6,6 +6,7 @@ use App\Http\Requests\Research\StoreResearchRequest;
 use App\Http\Requests\Research\UpdateResearchRequest;
 use App\Http\Resources\ResearchResource;
 use App\Models\Research;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -21,27 +22,21 @@ class ResearchController extends Controller
     {
         $name = $request->query('name');
         $machineryId = $request->query('machinery_id');
-        $authorId = $request->query('author_id');
         $page = $request->query('page');
 
-        $research = Research::with(['author', 'machinery']);
+        $research = Research::with(['author', 'machinery'])
+            ->where(function (Builder $query) use ($request) {
+                $query->where('is_public', true)
+                    ->orWhere('author_id', $request->user()->id)
+                    ->orWhereRelation('participants', 'id', request()->user()->id);
+            });
 
         if ($name) {
             $research = $research->where('name', 'like', '%' . $name . '%');
         }
 
         if ($machineryId) {
-            $research = $research->where('machinery_id', $machineryId);
-        }
-
-        if (is_null($authorId)) {
-            $research = $research->where('is_public', true)
-                ->orWhere('author_id', $request->user()->id);
-        } elseif ($authorId == $request->user()->id) {
-            $research = $research->whereAuthorId($authorId);
-        } else {
-            $research = $research->where('author_id', $authorId)
-                ->where('is_public', true);
+            $research = $research->whereMachineryId($machineryId);
         }
 
         if ($page) {
