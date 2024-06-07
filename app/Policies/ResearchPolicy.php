@@ -13,7 +13,7 @@ class ResearchPolicy
     public function view(User $user, Research $research): bool
     {
         return $research->is_public
-            || $user->is($research->author)
+            || $user->id === $research->author_id
             || $research->has('participants') && $research->participants->contains($user);
     }
 
@@ -22,7 +22,7 @@ class ResearchPolicy
      */
     public function update(User $user, Research $research): bool
     {
-        return $user->is($research->author);
+        return $user->id === $research->author_id;
     }
 
     /**
@@ -30,6 +30,6 @@ class ResearchPolicy
      */
     public function delete(User $user, Research $research): bool
     {
-        return $user->is($research->author);
+        return $user->id === $research->author_id;
     }
 }

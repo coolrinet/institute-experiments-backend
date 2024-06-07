@@ -28,7 +28,7 @@ class MachineryParameterController extends Controller
         $machineryParameters = MachineryParameter::with(['machinery', 'user']);
 
         if ($name) {
-            $machineryParameters = $machineryParameters->where('name', 'like', '%' . $name . '%');
+            $machineryParameters = $machineryParameters->where('name', 'like', '%'.$name.'%');
         }
 
         if ($machineryId) {
@@ -103,6 +103,12 @@ class MachineryParameterController extends Controller
     public function destroy(MachineryParameter $machineryParameter): Response
     {
         Gate::authorize('delete', $machineryParameter);
+
+        abort_if(
+            $machineryParameter->research()->exists(),
+            Response::HTTP_CONFLICT,
+            'Нельзя удалить параметр, который используется в исследованиях'
+        );
 
         $machineryParameter->delete();
 

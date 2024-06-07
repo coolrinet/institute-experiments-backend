@@ -65,9 +65,9 @@ class ResearchController extends Controller
 
             $research->save();
 
-            $parameters = MachineryParameter::where(function (Builder $query) use ($request) {
-                $query->whereIn('machinery_id', [$request->validated('machinery_id'), null]);
-            })->pluck('id');
+            $parameters = MachineryParameter::whereMachineryId($request->validated('machinery_id'))
+                ->orWhere('machinery_id', null)
+                ->pluck('id');
 
             $research->parameters()->attach($parameters);
 
@@ -104,11 +104,11 @@ class ResearchController extends Controller
 
                 $research->machinery()->associate($request->validated('machinery_id'));
 
-                $parameters = MachineryParameter::where(function (Builder $query) use ($request) {
-                    $query->whereIn('machinery_id', [$request->validated('machinery_id'), null]);
-                })->pluck('id');
+                $parameters = MachineryParameter::whereMachineryId($request->validated('machinery_id'))
+                    ->orWhere('machinery_id', null)
+                    ->pluck('id');
 
-                $research->parameters()->attach($parameters);
+                $research->parameters()->sync($parameters);
             }
 
             if ($request->has('participants')) {
