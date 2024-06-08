@@ -19,7 +19,6 @@ class ExperimentResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'date' => Date::parse($this->date)->translatedFormat('j F Y'),
-            'research' => ResearchResource::make($this->whenLoaded('research')),
             'user' => UserResource::make($this->whenLoaded('user')),
             'quantitativeInputs' => ExperimentParameterResource::collection(
                 $this->whenLoaded('quantitativeInputs')

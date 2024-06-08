@@ -21,7 +21,7 @@ class ExperimentSeeder extends Seeder
             $participants = $researchItem->participants()->get()
                 ->add($researchItem->author);
 
-            Experiment::factory(5)
+            Experiment::factory(10)
                 ->for($researchItem)
                 ->recycle($participants)
                 ->create();

@@ -27,7 +27,7 @@ class ExperimentController extends Controller
         $experiments = $research->experiments()->with(['user']);
 
         return ExperimentResource::collection(
-            $page ? $experiments : $experiments->paginate(5),
+            is_null($page) ? $experiments->get() : $experiments->paginate(5),
         );
     }
 
@@ -63,7 +63,6 @@ class ExperimentController extends Controller
 
         return ExperimentResource::make($experiment->load([
             'user',
-            'research',
             'quantitativeInputs',
             'qualityInputs',
             'quantitativeOutputs',
