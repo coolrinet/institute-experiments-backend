@@ -86,7 +86,10 @@ class ResearchController extends Controller
     {
         Gate::authorize('view', $research);
 
-        return ResearchResource::make($research->load(['machinery', 'author', 'participants']));
+        return ResearchResource::make(
+            $research->load(['machinery', 'author', 'participants'])
+                ->loadCount('experiments')
+        );
     }
 
     /**

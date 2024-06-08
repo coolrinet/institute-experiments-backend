@@ -20,10 +20,11 @@ class ResearchResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'lastExperimentDate' => $this->last_experiment_date ? Date::parse($this->last_experiment_date)->translatedFormat('j F Y') : null,
+            'isPublic' => $this->is_public,
             'machinery' => MachineryResource::make($this->whenLoaded('machinery')),
-            'parameters' => MachineryParameterResource::collection($this->whenLoaded('parameters')),
             'author' => UserResource::make($this->whenLoaded('author')),
             'participants' => UserResource::collection($this->whenLoaded('participants')),
+            'experimentCount' => $this->whenCounted('experiments'),
         ];
     }
 }

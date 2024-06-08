@@ -22,6 +22,23 @@ class Experiment extends Model
                 $research->save();
             }
         });
+
+        static::updated(function (Experiment $experiment) {
+            $research = $experiment->research;
+
+            if (is_null($research->last_experiment_date)
+                || $experiment->date->gt($research->last_experiment_date)) {
+                $research->last_experiment_date = $experiment->date;
+                $research->save();
+            }
+        });
+
+        static::deleted(function (Experiment $experiment) {
+            $research = $experiment->research;
+            $latestDate = $research->experiments()->max('last_experiment_date');
+            $research->last_experiment_date = $latestDate;
+            $research->save();
+        });
     }
 
     public $timestamps = false;
