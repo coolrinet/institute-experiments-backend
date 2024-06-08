@@ -35,7 +35,7 @@ class Experiment extends Model
 
         static::deleted(function (Experiment $experiment) {
             $research = $experiment->research;
-            $latestDate = $research->experiments()->max('last_experiment_date');
+            $latestDate = $research->experiments()->max('date');
             $research->last_experiment_date = $latestDate;
             $research->save();
         });
