@@ -7,6 +7,7 @@ use App\Http\Requests\Experiment\UpdateExperimentRequest;
 use App\Http\Resources\ExperimentResource;
 use App\Models\Experiment;
 use App\Models\Research;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -23,8 +24,13 @@ class ExperimentController extends Controller
         Gate::authorize('viewAny', [Experiment::class, $research->id]);
 
         $page = $request->query('page');
+        $name = $request->query('name');
 
         $experiments = $research->experiments()->with(['user']);
+
+        $experiments = $experiments->when($name, function (Builder $query) use ($name) {
+            $query->where('name', 'like', $name.'%');
+        });
 
         return ExperimentResource::collection(
             is_null($page) ? $experiments->get() : $experiments->paginate(5),

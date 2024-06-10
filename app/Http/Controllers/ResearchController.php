@@ -30,24 +30,16 @@ class ResearchController extends Controller
                 $query->where('is_public', true)
                     ->orWhere('author_id', $request->user()->id)
                     ->orWhereRelation('participants', 'id', request()->user()->id);
+            })
+            ->when($name, function (Builder $query) use ($name) {
+                $query->where('name', 'like', $name.'%');
+            })
+            ->when($machineryId, function (Builder $query) use ($machineryId) {
+                $query->where('machinery_id', $machineryId);
             });
 
-        if ($name) {
-            $research = $research->where('name', 'like', '%'.$name.'%');
-        }
-
-        if ($machineryId) {
-            $research = $research->whereMachineryId($machineryId);
-        }
-
-        if ($page) {
-            $research = $research->paginate(5);
-        } else {
-            $research = $research->get();
-        }
-
         return ResearchResource::collection(
-            $research
+            is_null($page) ? $research->get() : $research->paginate(5)
         );
     }
 

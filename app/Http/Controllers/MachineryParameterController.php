@@ -6,6 +6,7 @@ use App\Http\Requests\MachineryParameter\StoreMachineryParameterRequest;
 use App\Http\Requests\MachineryParameter\UpdateMachineryParameterRequest;
 use App\Http\Resources\MachineryParameterResource;
 use App\Models\MachineryParameter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -25,32 +26,22 @@ class MachineryParameterController extends Controller
         $valueType = $request->query('value_type');
         $page = $request->query('page');
 
-        $machineryParameters = MachineryParameter::with(['machinery', 'user']);
-
-        if ($name) {
-            $machineryParameters = $machineryParameters->where('name', 'like', '%'.$name.'%');
-        }
-
-        if ($machineryId) {
-            $machineryParameters = $machineryParameters->whereMachineryId($machineryId);
-        }
-
-        if ($parameterType) {
-            $machineryParameters = $machineryParameters->whereParameterType($parameterType);
-        }
-
-        if ($valueType) {
-            $machineryParameters = $machineryParameters->whereValueType($valueType);
-        }
-
-        if ($page) {
-            $machineryParameters = $machineryParameters->paginate(5);
-        } else {
-            $machineryParameters = $machineryParameters->get();
-        }
+        $machineryParameters = MachineryParameter::with(['machinery', 'user'])
+            ->when($name, function (Builder $query) use ($name) {
+                $query->where('name', 'like', $name.'%');
+            })
+            ->when($machineryId, function (Builder $query) use ($machineryId) {
+                $query->where('machinery_id', $machineryId);
+            })
+            ->when($parameterType, function (Builder $query) use ($parameterType) {
+                $query->where('parameter_type', $parameterType);
+            })
+            ->when($valueType, function (Builder $query) use ($valueType) {
+                $query->where('value_type', $valueType);
+            });
 
         return MachineryParameterResource::collection(
-            $machineryParameters
+            is_null($page) ? $machineryParameters->get() : $machineryParameters->paginate(5)
         );
     }
 

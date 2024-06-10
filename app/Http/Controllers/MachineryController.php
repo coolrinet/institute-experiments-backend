@@ -6,6 +6,7 @@ use App\Http\Requests\Machinery\StoreMachineryRequest;
 use App\Http\Requests\Machinery\UpdateMachineryRequest;
 use App\Http\Resources\MachineryResource;
 use App\Models\Machinery;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -22,19 +23,14 @@ class MachineryController extends Controller
         $name = $request->query('name');
         $page = $request->query('page');
 
-        $machineries = Machinery::with('user');
+        $machineries = Machinery::with('user')
+            ->when($name, function (Builder $query) use ($name) {
+                $query->where('name', 'like', $name.'%');
+            });
 
-        if ($name) {
-            $machineries = $machineries->where('name', 'like', '%'.$name.'%');
-        }
-
-        if ($page) {
-            $machineries = $machineries->paginate(5);
-        } else {
-            $machineries = $machineries->get();
-        }
-
-        return MachineryResource::collection($machineries);
+        return MachineryResource::collection(
+            is_null($page) ? $machineries->get() : $machineries->paginate(5)
+        );
     }
 
     /**

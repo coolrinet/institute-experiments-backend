@@ -24,9 +24,9 @@ class UserController extends Controller
     {
         $page = $request->query('page');
 
-        $users = $page ? User::paginate(5) : User::all();
-
-        return UserResource::collection($users);
+        return UserResource::collection(
+            is_null($page) ? User::all() : User::paginate(5)
+        );
     }
 
     /**
