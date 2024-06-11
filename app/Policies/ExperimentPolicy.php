@@ -15,7 +15,8 @@ class ExperimentPolicy
     {
         $research = Research::find($researchId);
 
-        return $user->is($research->author)
+        return $research->is_public
+            || $user->is($research->author)
             || $research->has('participants') && $research->participants->contains($user);
     }
 
@@ -24,8 +25,11 @@ class ExperimentPolicy
      */
     public function view(User $user, Experiment $experiment): bool
     {
-        return $user->is($experiment->research->author)
-            || $experiment->research->has('participants') && $experiment->research->participants->contains($user);
+        $research = $experiment->research;
+
+        return $research->is_public
+            || $user->is($research->author)
+            || $research->has('participants') && $research->participants->contains($user);
     }
 
     /**
