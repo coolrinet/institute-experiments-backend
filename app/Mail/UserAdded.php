@@ -4,13 +4,12 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserAdded extends Mailable implements ShouldQueue
+class UserAdded extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -18,9 +17,10 @@ class UserAdded extends Mailable implements ShouldQueue
      * Create a new message instance.
      */
     public function __construct(
-        public User $user,
+        public User   $user,
         public string $password
-    ) {
+    )
+    {
         //
     }
 
