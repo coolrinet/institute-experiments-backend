@@ -36,7 +36,7 @@ class UserController extends Controller
     {
         Gate::authorize('create', User::class);
 
-        $password = Str::password();
+        $password = Str::password(12);
 
         $newUser = User::create(array_merge($request->validated(), [
             'password' => Hash::make($password),
