@@ -35,8 +35,8 @@ class ProfileController extends Controller
             'email' => $request->email,
         ];
 
-        if ($request->has('password')) {
-            $newData['password'] = Hash::make($request->current_password);
+        if ($request->has('new_password')) {
+            $newData['password'] = Hash::make($request->new_password);
         }
 
         $request->user()->update($newData);
