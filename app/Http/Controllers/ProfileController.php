@@ -17,7 +17,10 @@ class ProfileController extends Controller
      */
     public function showProfile(Request $request): UserResource
     {
-        return UserResource::make($request->user());
+        return UserResource::make(
+            $request->user()
+                ->loadCount(['machineries', 'machineryParameters', 'experiments', 'research', 'participatoryResearch'])
+        );
     }
 
     /**

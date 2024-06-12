@@ -21,6 +21,11 @@ class UserResource extends JsonResource
             'middleName' => $this->middle_name,
             'isAdmin' => $this->when($request->user()->is_admin, $this->is_admin),
             'email' => $this->email,
+            'machineryCount' => $this->whenCounted('machineries'),
+            'machineryParameterCount' => $this->whenCounted('machineryParameters'),
+            'researchCount' => $this->whenCounted('research'),
+            'participatoryResearchCount' => $this->whenCounted('participatoryResearch'),
+            'experimentCount' => $this->whenCounted('experiments'),
         ];
     }
 }
