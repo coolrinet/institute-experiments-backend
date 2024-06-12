@@ -25,12 +25,22 @@ class ExperimentController extends Controller
 
         $page = $request->query('page');
         $name = $request->query('name');
+        $withParameters = $request->query('with_parameters');
 
         $experiments = $research->experiments()->with(['user']);
 
         $experiments = $experiments->when($name, function (Builder $query) use ($name) {
             $query->where('name', 'like', $name.'%');
         });
+
+        if ($withParameters) {
+            $experiments = $experiments->with([
+                'quantitativeInputs',
+                'qualityInputs',
+                'quantitativeOutputs',
+                'qualityOutputs',
+            ]);
+        }
 
         return ExperimentResource::collection(
             is_null($page) ? $experiments->get() : $experiments->paginate(5),
